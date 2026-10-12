@@ -1,0 +1,26 @@
+CYCLETWIN AI — FRESH DOCTOR PORTAL
+
+Run:
+python -m streamlit run app_doctor.py
+
+Login:
+doctor@cycletwin.demo
+1234
+
+Demo:
+Dashboard -> Kaggle Demo -> Load Random Kaggle Patient
+-> Health Assessment -> Run AI Assessment & Save
+-> AI Analysis -> Trends & History -> Recommendations
+-> What-if Simulator -> Reports
+
+Interactive AI Pipeline:
+Lifestyle Agent -> Health Assessment
+Symptom Agent -> Health Assessment
+Prediction Agent -> AI Analysis
+SHAP Explainability Agent -> AI Analysis
+Recommendation Agent -> Recommendations
+Report Engine -> Reports
+
+The dashboard is full-width and the agent controls are real clickable
+Streamlit buttons. Each target page shows the selected agent's actual
+patient-specific output where available.
