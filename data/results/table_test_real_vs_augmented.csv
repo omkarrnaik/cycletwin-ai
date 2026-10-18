@@ -1,0 +1,11 @@
+train set,model,auc,pr_auc,accuracy,recall,precision,f1
+Real only,Logistic Regression,0.9387,0.9241,0.8716,0.8611,0.775,0.8158
+Real only,Random Forest,0.9319,0.929,0.9358,0.8333,0.9677,0.8955
+Real only,XGBoost,0.9498,0.9404,0.9083,0.8333,0.8824,0.8571
+Real only,SVM,0.9357,0.9197,0.9083,0.8333,0.8824,0.8571
+Real only,Gradient Boosting,0.9467,0.9376,0.9174,0.8056,0.9355,0.8657
+Real + synthetic,Logistic Regression,0.9456,0.9129,0.8991,0.9444,0.7907,0.8608
+Real + synthetic,Random Forest,0.9429,0.9074,0.8807,0.8333,0.8108,0.8219
+Real + synthetic,XGBoost,0.9368,0.9103,0.8899,0.8889,0.8,0.8421
+Real + synthetic,SVM,0.9254,0.8813,0.8807,0.7222,0.8966,0.8
+Real + synthetic,Gradient Boosting,0.941,0.9184,0.9083,0.8611,0.8611,0.8611
