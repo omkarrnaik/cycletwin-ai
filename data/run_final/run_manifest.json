@@ -1,0 +1,41 @@
+{
+  "seed": 42,
+  "epochs": 500,
+  "test_size": 0.2,
+  "num_synthetic_rows": 1500,
+  "cycle_map": {
+    "2": 0,
+    "4": 1,
+    "5": 1
+  },
+  "n_real": 541,
+  "n_train": 432,
+  "n_test": 109,
+  "train_pos_rate": 0.3263888888888889,
+  "test_pos_rate": 0.3302752293577982,
+  "synthetic_pos_rate": 0.32666666666666666,
+  "quality": {
+    "col_shape": 0.8416375661375662,
+    "pair_trend": 0.964557999729905,
+    "overall": 0.9030977829337357
+  },
+  "dcr_train_min": 2.2934724899518546,
+  "dcr_train_median": 4.09748804242165,
+  "versions": {
+    "python": "3.13.5",
+    "numpy": "2.1.3",
+    "pandas": "2.3.3",
+    "sklearn": "1.9.1",
+    "scipy": "1.15.3",
+    "torch": "2.11.0+cpu",
+    "ctgan": "0.12.1"
+  },
+  "sha256": {
+    "pcos_clean_RAW_input": "0e06147535156deafd794205d89a6f6b6e5eab77870de1337648058abf92302d",
+    "run_final/pcos_clean.csv (cycle 0/1)": "0c860370f54370b5326832bbf4964c05d82d5f914e003cd3bc0b23deef8c9ffb",
+    "train_real.csv": "cd3a9b62ebc61367391973a8e1e8e2aba35f43e8d76016a654c648bf4e466a6f",
+    "test_real.csv": "217a02da2933cc4d2246dfe5c481de954c1526ee0157d239f5cda8462d45ae08",
+    "synthetic_pcos.csv": "e403bedf4ae76fab9bf94f689d50b151d007fc1614f6c9313a2c25a0a4ad2b69",
+    "augmented_train.csv": "09fb3c3285379e839799218b2bbd5b359c331289b18ddf4793239af80c0ce787"
+  }
+}
