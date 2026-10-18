@@ -425,13 +425,13 @@ def shap_legend():
         <span style="display:inline-block;width:70px;height:10px;border-radius:5px;
         background:linear-gradient(90deg, rgb{SHAP_RED_LIGHT}, rgb{SHAP_RED_DARK});
         vertical-align:middle;margin-right:8px;"></span>
-        🟢 <b>Green</b> (deeper = stronger) = pushes prediction toward <b>higher</b> PCOS risk
+        🟢 <b>Green</b> (deeper = stronger) = pushes prediction toward <b>lower</b> PCOS risk
         </div>
         <div>
         <span style="display:inline-block;width:70px;height:10px;border-radius:5px;
         background:linear-gradient(90deg, rgb{SHAP_GREEN_LIGHT}, rgb{SHAP_GREEN_DARK});
         vertical-align:middle;margin-right:8px;"></span>
-        🔴 <b>Red</b> (deeper = stronger) = pushes prediction toward <b>lower</b> PCOS risk
+        🔴 <b>Red</b> (deeper = stronger) = pushes prediction toward <b>higher</b> PCOS risk
         </div>
         </div>""",
         unsafe_allow_html=True
