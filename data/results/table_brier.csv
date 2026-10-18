@@ -1,0 +1,6 @@
+model,brier_test,brier_oof
+Gradient Boosting,0.0663,0.0782
+XGBoost,0.0647,0.0798
+SVM,0.0821,0.0894
+Random Forest,0.0915,0.0912
+Logistic Regression,0.0911,0.0949

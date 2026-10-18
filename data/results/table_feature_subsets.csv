@@ -1,0 +1,11 @@
+subset,n_features,model,oof_auc,test_auc,test_auc_lo,test_auc_hi
+All features (41),41,Random Forest,0.954,0.932,0.857,0.989
+All features (41),41,Logistic Regression,0.933,0.939,0.874,0.984
+No ultrasound (36),36,Random Forest,0.882,0.882,0.805,0.947
+No ultrasound (36),36,Logistic Regression,0.846,0.865,0.784,0.932
+Top 10 (train-ranked),10,Random Forest,0.953,0.936,0.874,0.984
+Top 10 (train-ranked),10,Logistic Regression,0.949,0.947,0.881,0.992
+Top 6 (train-ranked),6,Random Forest,0.943,0.94,0.884,0.984
+Top 6 (train-ranked),6,Logistic Regression,0.946,0.943,0.878,0.99
+Top 6 without ultrasound,6,Random Forest,0.84,0.884,0.813,0.942
+Top 6 without ultrasound,6,Logistic Regression,0.872,0.896,0.828,0.953

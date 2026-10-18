@@ -1,0 +1,6 @@
+model,TRTR_auc,TSTR_auc,TSTR_lo,TSTR_hi,diff_lo,diff_hi,TSTR_recall,TSTR_precision
+Random Forest,0.932,0.937,0.886,0.976,-0.04,0.056,0.917,0.702
+XGBoost,0.95,0.915,0.846,0.97,-0.08,0.003,0.889,0.64
+Gradient Boosting,0.947,0.901,0.833,0.957,-0.101,0.002,0.889,0.64
+Logistic Regression,0.939,0.871,0.797,0.937,-0.137,0.008,0.861,0.62
+SVM,0.936,0.802,0.703,0.889,-0.217,-0.052,0.528,0.704

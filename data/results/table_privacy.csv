@@ -1,0 +1,7 @@
+check,value
+exact copies of train rows,0
+DCR synthetic->train: min / median,2.607 / 4.537
+DCR real test->train: min / median,2.218 / 5.033
+share synthetic closer than 5th pct of real holdout,0.116
+NNDR median / 5th pct,0.957 / 0.823
+membership-inference AUC (95% CI),0.535 (0.477 to 0.591)
