@@ -40,6 +40,6 @@ class SHAPExplainabilityAgent:
 
         return {
             "all_features": result,
-            "top_positive": result[result.shap_value > 0].head(8),
-            "top_negative": result[result.shap_value < 0].head(8)
+            "top_positive": result[result.shap_value > 0].head(6),
+            "top_negative": result[result.shap_value < 0].head(6)
         }

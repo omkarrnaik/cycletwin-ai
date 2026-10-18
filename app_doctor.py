@@ -280,8 +280,8 @@ def metric(title, value, subtitle=""):
 
 
 # ---------- SHAP visualization ----------
-SHAP_RED = "#22A06B"      # positive SHAP -> higher predicted PCOS risk
-SHAP_GREEN = "#DC2626"    # negative SHAP -> lower predicted PCOS risk
+SHAP_RED =  "#DC2626"    # negative SHAP -> lower predicted PCOS risk
+SHAP_GREEN =  "#22A06B"    # positive SHAP -> higher predicted PCOS risk
 
 # Swapped color gradients
 SHAP_RED_LIGHT = (200, 245, 222)    # weak positive contribution
@@ -299,7 +299,7 @@ def _lerp_color(light_rgb, dark_rgb, t):
     return f"#{r:02X}{g:02X}{b:02X}"
 
 
-def shap_bar_figure(rows, top_n=8, height=360):
+def shap_bar_figure(rows, top_n=6, height=360):
     """Horizontal bar chart of SHAP contributions.
 
     Positive SHAP contributions are shown in red and indicate
