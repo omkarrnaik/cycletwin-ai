@@ -36,7 +36,7 @@ with open("models/feature_schema.pkl", "rb") as f:
 with open("models/feature_medians.json", "r") as f:
     MEDIANS = json.load(f)
 
-DATA_PATH = Path("data/pcos_clean.csv")
+DATA_PATH = Path("data/run_final/pcos_clean.csv")
 DEMO_DF = pd.read_csv(DATA_PATH) if DATA_PATH.exists() else pd.DataFrame()
 
 st.markdown("""
@@ -476,6 +476,9 @@ def run_ai(values):
         clean[f] = int(number_value(v, 0)) if is_binary(f) else number_value(
             v, MEDIANS.get(f, 0)
         )
+    for f in FEATURES:
+        if is_binary(f) and clean[f] not in (0, 1):
+            raise ValueError(f"{f} must be 0 or 1, got {clean[f]}")
     return CycleTwinOrchestrator().run(clean)
 
 
@@ -1041,7 +1044,7 @@ elif page == "Kaggle Demo":
     """, unsafe_allow_html=True)
 
     if DEMO_DF.empty:
-        st.error("data/pcos_clean.csv not found.")
+        st.error("data/run_final/pcos_clean.csv not found.")
     else:
         st.info(f"Dataset available: {len(DEMO_DF):,} rows.")
         if st.button("🎲 Load Random Kaggle Patient",
@@ -1051,7 +1054,7 @@ elif page == "Kaggle Demo":
             pid=add_patient(
                 doctor["doctor_id"], f"Demo Patient {idx+1}",
                 number_value(row.get("Age (yrs)",25),25),
-                number_value(row.get("Height (Cm)",160),160),
+                number_value(row.get("Height(Cm)",160),160),
                 number_value(row.get("Weight (Kg)",60),60),
                 "Kaggle Demo"
             )

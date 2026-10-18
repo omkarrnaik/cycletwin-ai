@@ -1,118 +1,139 @@
-# CycleTwin AI — Master Build (Phases 3–8 merged)
+# CycleTwin AI — PCOS Risk-Awareness Doctor Portal
 
-This is the two uploaded projects (**Phase 3** and **Phases 4–8**) combined into a
-single, working codebase, with three bugs fixed that were present in the
-Phase 4–8 code (see "Fixes applied" below).
+CycleTwin AI is a research prototype that estimates a PCOS risk-awareness
+probability from clinical, symptom and lifestyle inputs, explains each
+prediction with SHAP, and presents results in a Streamlit doctor portal.
 
-Phase 4–8's agents were already an exact superset of Phase 3's, so this build
-uses Phase 4–8 as the base and adds back Phase 3's CLI demo script for quick
-testing without launching the dashboard.
+> **Scope:** educational/research prototype. The output is a risk-awareness
+> signal, **not a medical diagnosis** and not a treatment recommendation.
+> SHAP describes model behaviour; it does not establish causality.
 
-## How to run it
-
-Open this folder in VS Code, open a terminal (`` Ctrl+` ``), then:
+## Quick start
 
 ```bash
-pip install -r requirements.txt
-streamlit run app.py
+pip install -r requirements_doctor_portal.txt
+python -m streamlit run app_doctor.py
 ```
 
-Streamlit will start a local server and print a URL — open it in your browser:
+Open http://localhost:8501.
 
-```
-Local URL: http://localhost:8501
-```
+Demo login (demo only): `doctor@cycletwin.demo` / `1234`
 
-That's the main app: a purple/white dashboard with pages for Assessment,
-Analysis (SHAP), Trends, What-if Simulator, Recommendations, and Reports.
-
-### Optional: quick CLI check (no browser)
+Command-line smoke test (no browser):
 
 ```bash
 python run_demo.py
 ```
 
-This runs one sample patient through the full pipeline and prints the
-prediction, SHAP drivers, recommendations, and generates a PDF report at
-`reports/cycletwin_report.pdf` — useful to sanity-check the pipeline is wired
-correctly before touching the UI.
+This runs one sample patient through all agents and writes
+`reports/cycletwin_report.pdf`.
 
-## File flow (pipeline)
+## Portal features
+
+- Doctor login, dashboard and patient registry
+- New patient entry and Kaggle sample-patient loading
+- Baseline and follow-up assessments with trend and "What changed?" views
+- Patient-specific SHAP explanation
+- What-if simulator (re-scores the model with edited inputs)
+- Downloadable PDF report
+- Persistent SQLite storage (`data/cycletwin_doctor.db`, created automatically,
+  git-ignored)
+
+## Pipeline
 
 ```
-User input (Streamlit form or run_demo.py)
-        |
-        v
-CycleTwinOrchestrator (orchestrator.py)
-        |
-        v
-  1. Lifestyle Agent        agents/lifestyle_agent.py
-        |
-        v
-  2. Symptom Agent          agents/symptom_agent.py
-        |
-        v
-  3. Prediction Agent       agents/prediction_agent.py
-        |   loads models/rf_pcos_model.pkl + models/feature_schema.pkl
-        v
-  4. SHAP Explainability    agents/shap_agent.py
-        |   per-patient feature contributions
-        v
-  5. Recommendation Agent   agents/recommendation_agent.py
-        |
-        v
-  6. Report Agent (on demand)  agents/report_agent.py
-        |   builds reports/cycletwin_report.pdf
-        v
-     Result dict --> displayed in app.py / saved via database.py
+Input (portal form or run_demo.py)
+  -> orchestrator.py
+     1. Lifestyle Agent        agents/lifestyle_agent.py
+     2. Symptom Agent          agents/symptom_agent.py
+     3. Prediction Agent       agents/prediction_agent.py   (models/*.pkl)
+     4. SHAP Agent             agents/shap_agent.py
+     5. Recommendation Agent   agents/recommendation_agent.py
+     6. Report Agent           agents/report_agent.py       (on demand)
 ```
 
-Supporting modules:
-- `database.py` — SQLite storage (`data/cycletwin.db`) of users + past
-  assessments, powering the Trends page.
-- `what_if.py` — re-runs the model with edited inputs for the What-if
-  Simulator page.
-- `app.py` — the Streamlit dashboard; the single entry point for normal use.
-- `run_demo.py` — CLI entry point for quick pipeline testing.
+The agents are deterministic, rule-based modules coordinated by one
+orchestrator. They are not autonomous LLM agents. Only the Prediction and SHAP
+agents use the trained model.
 
-## Reference docs (kept from both source projects)
+Risk bands in `prediction_agent.py` (below 0.40, 0.40–0.70, 0.70 and above)
+are heuristic and have not been calibrated.
 
-- `PHASE_3.md` — original Phase 3 agent-pipeline design notes
-- `PHASE_4.md` — Phase 4 explainability/dashboard notes
-- `PHASES_4_TO_8.md` — Phase 5–8 notes (database, dashboard, what-if, PDF report)
+## Project layout
 
-## Fixes applied while merging
+```
+app_doctor.py            Streamlit doctor portal
+doctor_database.py       SQLite storage (doctors, patients, assessments)
+orchestrator.py          runs the agent pipeline
+what_if.py               what-if simulation
+run_demo.py              CLI smoke test
+agents/                  the six agents
+models/                  rf_pcos_model.pkl, feature_schema.pkl, feature_medians.json
+data/pcos_clean.csv      raw Kaggle data (cycle coded 2/4/5)
+data/run_final/          one reproducible data run (see below)
+data/PCOS_TVAE_Synthetic_Data_Generator.ipynb   split + synthetic data
+data/PCOS_Analysis.ipynb                         model training and evaluation
+```
 
-1. **`database.py`** was missing `import json` and `import pandas as pd`,
-   which it uses internally — would crash on the first save/history read.
-2. **`agents/prediction_agent.py`** expected the model file to be a
-   `{"model": ..., "features": ...}` bundle, but `models/rf_pcos_model.pkl`
-   is actually the raw `RandomForestClassifier`. Fixed to load the model
-   directly and pull the feature list from `models/feature_schema.pkl`
-   (matching how `shap_agent.py` already loads it).
-3. **`agents/report_agent.py`**: the orchestrator's `generate_report()`
-   called a `.generate()` method that didn't exist, and the report body
-   referenced a `state["explanation"]["patient_signals"]` key that the
-   Phase 4–8 pipeline no longer produces (it was replaced by SHAP output).
-   Added a `generate()` method and rewrote the report body to use the
-   current `symptoms` and `shap_top_positive` / `shap_top_negative` state.
-4. **`app.py` line 247**: a single-quoted string contained an unescaped
-   apostrophe (`women's`), which closed the string early and produced a
-   genuine `SyntaxError` — this would have stopped the whole app from
-   starting. Fixed by switching that string to double quotes.
+## Data and model pipeline (reproducible)
 
-## Verification performed
+Run in this order. All seeds are 42.
 
-- Every `.py` file compiled cleanly (`py_compile`) — no syntax errors.
-- `python run_demo.py` runs the full pipeline and produces a PDF report.
-- All 7 dashboard pages were executed programmatically via Streamlit's
-  `AppTest` framework with no exceptions.
-- The three interactive buttons (Run AI Assessment, Simulate change,
-  Generate PDF Report) were each clicked and verified to produce real
-  output: a saved row in `data/cycletwin.db` and a valid 1-page PDF at
-  `reports/cycletwin_report.pdf`.
+1. `data/PCOS_TVAE_Synthetic_Data_Generator.ipynb`
+   - Reads raw `pcos_clean.csv` (541 records, 177 positive = 32.7%).
+   - Recodes `Cycle(R/I)`: 2 -> 0 (Regular), 4 -> 1 (Irregular), and the single
+     record coded 5 -> 1 (Irregular).
+   - Stratified split **before** any modelling: 432 train / 109 test.
+   - Fits TVAE on the **train split only** and samples 1,500 synthetic records
+     with the same positive rate as train. Checks that no synthetic record
+     copies a train or test record.
+   - Writes everything to `data/run_final/` with `run_manifest.json`
+     (seed, library versions, SHA-256 hashes, quality scores).
+2. `data/PCOS_Analysis.ipynb`
+   - Trains Logistic Regression, Random Forest, XGBoost, SVM and Gradient
+     Boosting on (a) real train only and (b) real train + synthetic.
+   - Every model is scored on the same 109 real test records. The test set is
+     never used by TVAE or by training.
+   - Model choice uses 5-fold CV on real train data only.
+   - Saves `models/rf_pcos_model.pkl`, `feature_schema.pkl` and
+     `feature_medians.json` (medians from real train only).
 
-## Note on scope
+### Main results (real test set, n = 109, 36 positive)
 
-This is a college/educational prototype (per the original project's own
-docs) — model output is a "risk-awareness" signal, not a medical diagnosis.
+| Setting | RF AUC | Accuracy | Recall | Precision | F1 |
+|---|---|---|---|---|---|
+| Real train only (deployed) | 0.932 | 0.936 | 0.833 | 0.968 | 0.896 |
+| Real train + 1,500 synthetic | 0.943 | 0.881 | 0.833 | 0.811 | 0.822 |
+
+- RF 5-fold CV AUC on real train: 0.955.
+- Paired bootstrap of the AUC gain from synthetic data: 95% CI -0.018 to 0.045.
+  The interval includes 0, so synthetic augmentation shows **no proven benefit**.
+  The deployed model is therefore trained on real data only.
+- The test set is small, so differences between models are within noise.
+
+### Synthetic data quality (TVAE, train vs synthetic)
+
+- Column shape score 0.84; pair-trend score 0.96.
+- Weakest columns: Blood Group, II beta-HCG, Pulse rate, Hb, AMH.
+- Distance to closest real record: minimum 2.29, no exact copies.
+- Distance checks are not a formal privacy guarantee.
+
+## Encoding note
+
+`Cycle(R/I)` is 0 = Regular, 1 = Irregular everywhere (training data, saved
+medians, agents, portal). Older material that uses 2/4 is obsolete.
+
+## Known limitations
+
+- One public Kaggle dataset (Kerala, India); no external validation.
+- AMH, follicle counts and ultrasound features are close to diagnostic criteria,
+  so performance is optimistic for screening without a scan.
+- Small test set (109 records).
+- Demo authentication stores the doctor password in plain text. Do not use real
+  patient data with this portal.
+
+## Reproducibility
+
+Versions used (see `data/run_final/run_manifest.json`): Python 3.13.5,
+numpy 2.1.3, pandas 2.3.3, scikit-learn 1.9.1, scipy 1.15.3, torch 2.11.0,
+ctgan 0.12.1. The pickled model needs the pinned scikit-learn version.

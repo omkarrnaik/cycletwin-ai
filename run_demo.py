@@ -13,7 +13,7 @@ from orchestrator import CycleTwinOrchestrator
 user_input = {
     'Age (yrs)': 27.0, 'Weight (Kg)': 52.0, 'Height(Cm)': 150.0, 'BMI': 23.1,
     'Blood Group': 11.0, 'Pulse rate(bpm)': 82.0, 'RR (breaths/min)': 20.0,
-    'Hb(g/dl)': 11.1, 'Cycle(R/I)': 2.0, 'Cycle length(days)': 5.0,
+    'Hb(g/dl)': 11.1, 'Cycle(R/I)': 0.0, 'Cycle length(days)': 5.0,
     'Marraige Status (Yrs)': 5.0, 'Pregnant(Y/N)': 0.0, 'No. of aborptions': 0.0,
     'I   beta-HCG(mIU/mL)': 1.99, 'II    beta-HCG(mIU/mL)': 1.99,
     'FSH(mIU/mL)': 4.97, 'LH(mIU/mL)': 2.23, 'FSH/LH': 2.228699552,
