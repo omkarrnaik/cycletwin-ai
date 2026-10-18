@@ -557,7 +557,7 @@ def render_agent_focus(result, focus):
         st.subheader("Prediction output")
         a, b = st.columns(2)
         with a:
-            metric("Model Probability", f"{float(pred.get('probability', 0)):.1%}", "Random Forest")
+            metric("Model Score", f"{float(pred.get('probability', 0)):.1%}", "Random Forest")
         with b:
             metric("Risk Pattern", pred.get("risk_band", "—"))
 
@@ -638,7 +638,7 @@ def generate_pdf(patient, rows):
         Spacer(1,12),
         Paragraph("Current Assessment", styles["Heading2"]),
         Paragraph(
-            f"Latest model probability: <b>{latest['probability']:.1%}</b>",
+            f"Latest model Score: <b>{latest['probability']:.1%}</b>",
             styles["Normal"]
         ),
         Paragraph(
@@ -660,7 +660,7 @@ def generate_pdf(patient, rows):
             ),
             Spacer(1,8)
         ]
-        data = [["Visit","Date","Type","Probability","Risk"]]
+        data = [["Visit","Date","Type","Model Score","Risk"]]
         for i, r in enumerate(rows, 1):
             data.append([
                 i, str(r["created_at"])[:16], r["assessment_type"],
@@ -885,7 +885,7 @@ if page == "Dashboard":
       <p>One workspace for PCOS risk awareness, explainable AI and longitudinal patient follow-up.</p>
       <div class="hero-chip-row">
         <span class="badge">🧠 Explainable AI</span>
-        <span class="badge">🤖 Multi-Agent</span>
+        <span class="badge">🤖 Agent-based pipeline</span>
         <span class="badge">📈 Follow-up Intelligence</span>
         <span class="badge">📄 Smart Reports</span>
       </div>
@@ -975,7 +975,7 @@ if page == "Dashboard":
             rows.append({
                 "Patient":p["name"], "Patient ID":p["patient_code"],
                 "Source":p["source"], "Visits":len(h),
-                "Latest Probability":
+                "Latest Model Score":
                     f"{latest['probability']:.1%}" if latest else "—",
                 "Risk Pattern":
                     latest["risk_band"] if latest else "Awaiting assessment"
@@ -1198,7 +1198,7 @@ elif page == "AI Analysis":
                 <p>Patient-specific model explanation for {p['name']}.</p>
                 </div>""", unsafe_allow_html=True)
             a,b,c=st.columns(3)
-            with a: metric("Probability",f"{prob:.1%}","Random Forest output")
+            with a: metric("Model Score",f"{prob:.1%}","Random Forest output")
             with b: metric("Risk Pattern",result["prediction"]["risk_band"])
             with c: metric("Visits",len(get_assessments(p["patient_id"])))
             shap_rows=result.get("shap_rows",[])
@@ -1226,7 +1226,7 @@ elif page == "AI Analysis":
                 "Prediction Agent": {
                     "icon": "🎯",
                     "title": "Prediction Agent",
-                    "summary": "Runs the trained Random Forest model and produces the risk probability.",
+                    "summary": "Runs the trained Random Forest model and produces the risk-awareness score.",
                 },
                 "SHAP Explainability Agent": {
                     "icon": "🧠",

@@ -22,7 +22,7 @@ class ReportAgent(Agent):
                 styles["Heading2"]
             ),
             Paragraph(
-                f"Model probability: {state['prediction']['probability']:.1%}",
+                f"Model score: {state['prediction']['probability']:.1%}",
                 styles["BodyText"]
             ),
             Spacer(1, 12),
